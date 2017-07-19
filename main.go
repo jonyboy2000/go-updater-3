@@ -118,7 +118,7 @@ func main() {
 	var backedUpFiles []string
 
 	for _, file := range updateFiles {
-		err := backupFile(updateDir + file)
+		err = backupFile(updateDir + file)
 
 		if err != nil {
 			if err.Error() == "file not found" {
@@ -136,7 +136,7 @@ func main() {
 	fmt.Println("Patching files.")
 
 	for _, file := range updateFiles {
-		err := copyFile("temp/update/"+file, updateDir+file)
+		err = copyFile("temp/update/"+file, updateDir+file)
 
 		if err != nil {
 			// Failure to update file so restore from backup
@@ -144,7 +144,7 @@ func main() {
 			fmt.Println("Restoring files from backup")
 
 			for _, backup := range backedUpFiles {
-				err := restoreFile(backup)
+				err = restoreFile(backup)
 
 				if err != nil {
 					fmt.Println("Failed to restore file: " + backup)
