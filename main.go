@@ -39,20 +39,19 @@ func main() {
 	// URL Checks
 	var downloadURL string // Declared here to allow building with "go build"
 	_, err := url.ParseRequestURI(os.Args[1])
-	if err == nil {
-		downloadURL = os.Args[1]
-	} else {
+	if err != nil {
 		fmt.Println("Invalid URL argument provided.")
 		fmt.Println(err.Error())
 		os.Exit(0)
 	}
+
+	downloadURL = os.Args[1]
 
 	// Checks update target location
 	updateTarget, err := os.Stat(os.Args[2])
 	if err != nil {
 		if os.IsNotExist(err) {
 			fmt.Println("Update target dir doesn't exist.")
-			os.Exit(0)
 		}
 
 		fmt.Println("Error accessing update target dir")
