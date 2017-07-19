@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
+	"regexp"
 	"strconv"
 
 	"github.com/mholt/archiver"
@@ -22,8 +24,11 @@ var version = "1.0"
 //  - Update folder target to overwrite, trailing slash required
 
 func main() {
+	// Checks arguments
+	argCount := len(os.Args)
+
 	// Checks for version argument
-	if len(os.Args) == 2 {
+	if argCount == 2 {
 		if os.Args[1] == "--version" {
 			fmt.Println("Go-Updater Version " + version)
 			os.Exit(1)
@@ -31,7 +36,7 @@ func main() {
 	}
 
 	// Check arguments
-	if len(os.Args) < 3 {
+	if argCount < 3 {
 		fmt.Println("Invalid arguments provided.")
 		os.Exit(0)
 	}
@@ -65,6 +70,19 @@ func main() {
 	}
 
 	updateDir := os.Args[2]
+
+	autoStart := false
+	var autoStartApplication string
+
+	// Checks remaining arguments using regexes
+	if argCount != 3 {
+		for i := 3; i < argCount-1; i++ {
+			if match, _ := regexp.MatchString("(^--start)", os.Args[i]); match {
+				autoStart = true
+				autoStartApplication = os.Args[i+1]
+			}
+		}
+	}
 
 	// Downloads the .gz to a temporary file
 	err = os.MkdirAll("temp/", 0755)
@@ -175,6 +193,19 @@ func main() {
 	if err != nil {
 		fmt.Println("Error cleaning up, dir \"temp/\" has to be manually deleted.")
 		fmt.Println(err.Error())
+	}
+
+	// Start application if applicable
+	if autoStart {
+		fmt.Println("Starting application.")
+		application := exec.Command(autoStartApplication)
+
+		err := application.Start()
+
+		if err != nil {
+			fmt.Println("Failed to start application")
+			fmt.Println(err.Error())
+		}
 	}
 
 	os.Exit(1)
