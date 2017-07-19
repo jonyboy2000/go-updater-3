@@ -43,6 +43,7 @@ func main() {
 		downloadURL = os.Args[1]
 	} else {
 		fmt.Println("Invalid URL argument provided.")
+		fmt.Println(err.Error())
 		os.Exit(0)
 	}
 
@@ -50,16 +51,17 @@ func main() {
 	updateTarget, err := os.Stat(os.Args[2])
 	if err != nil {
 		if os.IsNotExist(err) {
-			fmt.Println("Update target doesn't exist.")
+			fmt.Println("Update target dir doesn't exist.")
 			os.Exit(0)
 		}
 
-		fmt.Println("Error accessing update target")
+		fmt.Println("Error accessing update target dir")
+		fmt.Println(err.Error())
 		os.Exit(0)
 	}
 
 	if !updateTarget.IsDir() {
-		fmt.Println("The update target appears to be a file.")
+		fmt.Println("The update target dir appears to be a file.")
 		os.Exit(0)
 	}
 
@@ -70,12 +72,14 @@ func main() {
 
 	if err != nil {
 		fmt.Println("Unable to create temporary directory.")
+		fmt.Println(err.Error())
 	}
 
 	gzFile, err := os.Create("temp/update.tgz")
 
 	if err != nil {
 		fmt.Println("Can not create the temporary download file.")
+		fmt.Println(err.Error())
 		os.Exit(0)
 	}
 
@@ -83,6 +87,7 @@ func main() {
 
 	if err != nil {
 		fmt.Println("Can not download the update.")
+		fmt.Println(err.Error())
 		os.Exit(0)
 	}
 
@@ -91,6 +96,7 @@ func main() {
 	n, err := io.Copy(gzFile, resp.Body)
 	if err != nil {
 		fmt.Println("Can not download the update.")
+		fmt.Println(err.Error())
 		os.Exit(0)
 	}
 
@@ -101,6 +107,7 @@ func main() {
 
 	if err != nil {
 		fmt.Println("Error extracting archive.")
+		fmt.Println(err.Error())
 		os.Exit(0)
 	}
 
@@ -110,6 +117,8 @@ func main() {
 
 	if err != nil {
 		fmt.Println("Error with update processing.")
+		fmt.Println(err.Error())
+		os.Exit(0)
 	}
 
 	// Create a backup before continuing
@@ -125,7 +134,8 @@ func main() {
 				continue
 			}
 
-			fmt.Println("Unable to continue due to a failure to create a backup of file.")
+			fmt.Println("Unable to continue due backup failure.")
+			fmt.Println(err.Error())
 			os.Exit(0)
 		}
 
@@ -141,6 +151,7 @@ func main() {
 		if err != nil {
 			// Failure to update file so restore from backup
 			fmt.Println("Failed to patch file: " + file)
+			fmt.Println(err.Error())
 			fmt.Println("Restoring files from backup")
 
 			for _, backup := range backedUpFiles {
@@ -148,6 +159,7 @@ func main() {
 
 				if err != nil {
 					fmt.Println("Failed to restore file: " + backup)
+					fmt.Println(err.Error())
 				}
 			}
 
