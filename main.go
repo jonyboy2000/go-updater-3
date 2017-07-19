@@ -90,6 +90,8 @@ func main() {
 	if err != nil {
 		fmt.Println("Unable to create temporary directory.")
 		fmt.Println(err.Error())
+		cleanUp()
+		os.Exit(0)
 	}
 
 	gzFile, err := os.Create("temp/update.tgz")
@@ -97,6 +99,7 @@ func main() {
 	if err != nil {
 		fmt.Println("Can not create the temporary download file.")
 		fmt.Println(err.Error())
+		cleanUp()
 		os.Exit(0)
 	}
 
@@ -105,6 +108,7 @@ func main() {
 	if err != nil {
 		fmt.Println("Can not download the update.")
 		fmt.Println(err.Error())
+		cleanUp()
 		os.Exit(0)
 	}
 
@@ -114,6 +118,7 @@ func main() {
 	if err != nil {
 		fmt.Println("Can not download the update.")
 		fmt.Println(err.Error())
+		cleanUp()
 		os.Exit(0)
 	}
 
@@ -125,6 +130,7 @@ func main() {
 	if err != nil {
 		fmt.Println("Error extracting archive.")
 		fmt.Println(err.Error())
+		cleanUp()
 		os.Exit(0)
 	}
 
@@ -135,6 +141,7 @@ func main() {
 	if err != nil {
 		fmt.Println("Error with update processing.")
 		fmt.Println(err.Error())
+		cleanUp()
 		os.Exit(0)
 	}
 
@@ -153,6 +160,7 @@ func main() {
 
 			fmt.Println("Unable to continue due backup failure.")
 			fmt.Println(err.Error())
+			cleanUp()
 			os.Exit(0)
 		}
 
@@ -181,19 +189,13 @@ func main() {
 			}
 
 			fmt.Println("Failed to update.")
+			cleanUp()
 			os.Exit(0)
 		}
 	}
 
 	fmt.Println("Update completed.")
-	fmt.Println("Cleaning up.")
-
-	err = os.RemoveAll("temp/")
-
-	if err != nil {
-		fmt.Println("Error cleaning up, dir \"temp/\" has to be manually deleted.")
-		fmt.Println(err.Error())
-	}
+	cleanUp()
 
 	// Start application if applicable
 	if autoStart {
@@ -209,4 +211,16 @@ func main() {
 	}
 
 	os.Exit(1)
+}
+
+// Clean up function
+func cleanUp() {
+	fmt.Println("Cleaning up.")
+
+	err := os.RemoveAll("temp/")
+
+	if err != nil {
+		fmt.Println("Error cleaning up, dir \"temp/\" has to be manually deleted.")
+		fmt.Println(err.Error())
+	}
 }
