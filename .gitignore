@@ -48,3 +48,7 @@ Temporary Items
 
 # Build files
 Go-Updater.exe
+
+# Test directories
+temp/*
+test/*
