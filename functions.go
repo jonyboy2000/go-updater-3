@@ -96,6 +96,7 @@ func restoreFile(file string) error {
 // Returns a non-nil error if failure
 func copyFile(src, dest string) error {
 	srcFile, err := os.Open(src)
+	defer srcFile.Close()
 
 	if err != nil {
 		return err
@@ -112,6 +113,7 @@ func copyFile(src, dest string) error {
 	}
 
 	destFile, err := os.Create(dest)
+	defer destFile.Close()
 
 	if err != nil {
 		return err

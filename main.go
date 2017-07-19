@@ -73,7 +73,6 @@ func main() {
 	}
 
 	gzFile, err := os.Create("temp/update.tgz")
-	defer gzFile.Close()
 
 	if err != nil {
 		fmt.Println("Can not create the temporary download file.")
@@ -104,6 +103,8 @@ func main() {
 		fmt.Println("Error extracting archive.")
 		os.Exit(0)
 	}
+
+	gzFile.Close()
 
 	updateFiles, err := dirFileList("temp/update/")
 
@@ -156,5 +157,14 @@ func main() {
 	}
 
 	fmt.Println("Update completed.")
+	fmt.Println("Cleaning up.")
+
+	err = os.RemoveAll("temp/")
+
+	if err != nil {
+		fmt.Println("Error cleaning up, dir \"temp/\" has to be manually deleted.")
+		fmt.Println(err.Error())
+	}
+
 	os.Exit(1)
 }
