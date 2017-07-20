@@ -2,7 +2,7 @@
 A simple go application for updating files/applications
 
 - Uses "github.com/mholt/archiver" for archive decompression 
-  - Currently only .tar.gz is supported although more support can be addded if requested
+  - Currently only .tar.gz is supported although more support is planned
 - Automatically backs up files and will restore if an error occurs during update process
 
 ## General Usage
@@ -10,8 +10,8 @@ A simple go application for updating files/applications
   - `go-updater https://example.net/test.tar.gz application/`
 
 - Optional flags can be added like below:
- - `go-updater https://example.net/test.tar.gz application/ --start application.exe`
- - See below for more detailed information regarding the optional flags
+   - `go-updater https://example.net/test.tar.gz application/ --start application.exe`
+   - See below for more detailed information regarding the optional flags
 
 ## Optional flags:
   - `--start application.exe`
@@ -19,4 +19,13 @@ A simple go application for updating files/applications
 
 ## Gets go-updater version version:
   - `go-updater --version`
-  - Exits after printing the version string
+    - Exits after printing the version string
+
+## Building:
+- Install requirement:
+  - `go get -u github.com/mholt/archiver`
+
+- Download and build go-updater
+  - `git clone https://github.com/EngieDev/go-updater.git`
+  - `cd go-updater`
+  - `go build`
