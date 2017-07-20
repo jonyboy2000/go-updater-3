@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"github.com/mholt/archiver"
 )
 
 // Gets the file list of a given directory and any subdirectories
@@ -126,4 +128,57 @@ func copyFile(src, dest string) error {
 	}
 
 	return nil
+}
+
+// Extracts the specified archive to the specified directory
+// Supports the archive types supported by github.com/mholt/archiver
+// Uses the file extension to determine the necessary archive
+func extractArchive(archive, dest string) error {
+	// Checks archive exists
+	_, err := os.Stat(archive)
+
+	if err != nil {
+		return err
+	}
+
+	// Detects archive type by using the file extension
+	// Uses filepath.Ext to start with, then string manipulation
+	switch filepath.Ext(archive) {
+	case ".zip":
+		err = archiver.Zip.Open(archive, dest)
+	case ".tar":
+		err = archiver.Tar.Open(archive, dest)
+	case ".tgz":
+		err = archiver.TarGz.Open(archive, dest)
+	case ".tbz2":
+		err = archiver.TarBz2.Open(archive, dest)
+	case ".txz":
+		err = archiver.TarXZ.Open(archive, dest)
+	case ".tlz4":
+		err = archiver.TarLz4.Open(archive, dest)
+	case ".tsz":
+		err = archiver.TarSz.Open(archive, dest)
+	case ".rar":
+		err = archiver.Rar.Open(archive, dest)
+	default:
+		switch archive[len(archive)-8:] {
+		case ".tar.bz2":
+			err = archiver.TarBz2.Open(archive, dest)
+		case ".tar.lz4":
+			err = archiver.TarLz4.Open(archive, dest)
+		default:
+			switch archive[len(archive)-7:] {
+			case ".tar.gz":
+				err = archiver.TarGz.Open(archive, dest)
+			case ".tar.xz":
+				err = archiver.TarXZ.Open(archive, dest)
+			case ".tar.sz":
+				err = archiver.TarSz.Open(archive, dest)
+			default:
+				err = errors.New("Archive type is not supported.")
+			}
+		}
+	}
+
+	return err
 }

@@ -7,10 +7,9 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"path"
 	"regexp"
 	"strconv"
-
-	"github.com/mholt/archiver"
 )
 
 // Version of updater can be found by calling the executable on
@@ -19,8 +18,7 @@ var version = "1.0"
 
 // Main usage:
 //  Program should be called with the following arguments:
-//  - Update download URL
-//      - A tar.gz file of a single location
+//  - Update download URL to a .tar.gz archive
 //  - Update folder target to overwrite, trailing slash required
 
 func main() {
@@ -94,7 +92,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	gzFile, err := os.Create("temp/update.tgz")
+	archive, err := os.Create("temp/" + path.Base(downloadURL))
 
 	if err != nil {
 		fmt.Println("Can not create the temporary download file.")
@@ -114,7 +112,7 @@ func main() {
 
 	defer resp.Body.Close()
 
-	n, err := io.Copy(gzFile, resp.Body)
+	n, err := io.Copy(archive, resp.Body)
 	if err != nil {
 		fmt.Println("Can not download the update.")
 		fmt.Println(err.Error())
@@ -125,7 +123,7 @@ func main() {
 	fmt.Println("Successfully downloaded the update: " + strconv.Itoa(int(n)) + "bytes downloaded.")
 	fmt.Println("Extracting update archive.")
 
-	err = archiver.TarGz.Open("temp/update.tgz", "temp/update/")
+	err = extractArchive("temp/"+path.Base(downloadURL), "temp/update/")
 
 	if err != nil {
 		fmt.Println("Error extracting archive.")
@@ -134,7 +132,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	gzFile.Close()
+	archive.Close()
 
 	updateFiles, err := dirFileList("temp/update/")
 

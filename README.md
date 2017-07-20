@@ -1,8 +1,8 @@
 # go-updater
 A simple go application for updating files/applications
 
-- Uses "github.com/mholt/archiver" for archive decompression 
-  - Currently only .tar.gz is supported although more support is planned
+- Uses "github.com/mholt/archiver" for archive decompression
+  - Supports all the archive types that the above archiver supports
 - Automatically backs up files and will restore if an error occurs during update process
 
 ## General Usage
