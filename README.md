@@ -21,6 +21,9 @@ A simple go application for updating files/applications
   - `go-updater --version`
     - Exits after printing the version string
 
+## Releases:
+- Can be found in the builds directory for various OSes
+
 ## Building:
 - Install requirement:
   - `go get -u github.com/mholt/archiver`
@@ -28,4 +31,4 @@ A simple go application for updating files/applications
 - Download and build go-updater
   - `git clone https://github.com/EngieDev/go-updater.git`
   - `cd go-updater`
-  - `go build`
+  - `./build.sh` or `go build` depending on OS requirements
