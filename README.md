@@ -33,7 +33,7 @@ A simple go application for updating files/applications
 
 ## Releases:
 
-- Can be found in the [releases](https://github.com/EngieDev/go-updater/tree/master/builds) directory
+- Can be found in the [releases](https://github.com/EngieDev/go-updater/tree/master/releases) directory
 
 ## Building:
 
