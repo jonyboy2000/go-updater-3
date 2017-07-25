@@ -14,7 +14,7 @@ import (
 
 // Version of updater can be found by calling the executable on
 // its own with just "--version"
-var version = "1.0"
+var version = "1.1"
 
 // Main usage:
 //  Program should be called with the following arguments:
@@ -29,14 +29,14 @@ func main() {
 	if argCount == 2 {
 		if os.Args[1] == "--version" {
 			fmt.Println("Go-Updater Version " + version)
-			os.Exit(1)
+			os.Exit(0)
 		}
 	}
 
 	// Check arguments
 	if argCount < 3 {
 		fmt.Println("Invalid arguments provided.")
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	// URL Checks
@@ -45,7 +45,7 @@ func main() {
 	if err != nil {
 		fmt.Println("Invalid URL argument provided.")
 		fmt.Println(err.Error())
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	downloadURL = os.Args[1]
@@ -59,12 +59,12 @@ func main() {
 
 		fmt.Println("Error accessing update target dir")
 		fmt.Println(err.Error())
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	if !updateTarget.IsDir() {
 		fmt.Println("The update target dir appears to be a file.")
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	updateDir := os.Args[2]
@@ -89,7 +89,7 @@ func main() {
 		fmt.Println("Unable to create temporary directory.")
 		fmt.Println(err.Error())
 		cleanUp()
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	archive, err := os.Create("temp/" + path.Base(downloadURL))
@@ -98,7 +98,7 @@ func main() {
 		fmt.Println("Can not create the temporary download file.")
 		fmt.Println(err.Error())
 		cleanUp()
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	resp, err := http.Get(downloadURL)
@@ -107,7 +107,7 @@ func main() {
 		fmt.Println("Can not download the update.")
 		fmt.Println(err.Error())
 		cleanUp()
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	defer resp.Body.Close()
@@ -117,7 +117,7 @@ func main() {
 		fmt.Println("Can not download the update.")
 		fmt.Println(err.Error())
 		cleanUp()
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	fmt.Println("Successfully downloaded the update: " + strconv.Itoa(int(n)) + "bytes downloaded.")
@@ -129,7 +129,7 @@ func main() {
 		fmt.Println("Error extracting archive.")
 		fmt.Println(err.Error())
 		cleanUp()
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	archive.Close()
@@ -140,7 +140,7 @@ func main() {
 		fmt.Println("Error with update processing.")
 		fmt.Println(err.Error())
 		cleanUp()
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	// Create a backup before continuing
@@ -159,7 +159,7 @@ func main() {
 			fmt.Println("Unable to continue due backup failure.")
 			fmt.Println(err.Error())
 			cleanUp()
-			os.Exit(0)
+			os.Exit(1)
 		}
 
 		backedUpFiles = append(backedUpFiles, updateDir+file)
@@ -188,7 +188,7 @@ func main() {
 
 			fmt.Println("Failed to update.")
 			cleanUp()
-			os.Exit(0)
+			os.Exit(1)
 		}
 	}
 
@@ -208,7 +208,7 @@ func main() {
 		}
 	}
 
-	os.Exit(1)
+	os.Exit(0)
 }
 
 // Clean up function
